@@ -19,4 +19,4 @@ app.post("/signup",async(req,res)=>{
         id:user.id,
     })
 })
-app.listen(3000);
+app.listen(3030);
