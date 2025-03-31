@@ -13,7 +13,9 @@ export default async function Home() {
     <div>
       <h1>User</h1>
       <div>
+        name->
         <strong>Username:</strong> {user.username} <br />
+        password->
         <strong>Password:</strong> {user.password}
       </div>
     </div>
