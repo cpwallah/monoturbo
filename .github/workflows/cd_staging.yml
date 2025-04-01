@@ -6,23 +6,24 @@ on:
 jobs:
   redeploy_everything:
     runs-on: ubuntu-latest
-    name: Deploying everything to the stage cluster
     steps:
-      - name: Setup SSH Key
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" | sed 's/\\n/\n/g' > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keygen -y -f ~/.ssh/id_rsa > ~/.ssh/id_rsa.pub
           echo "${{ secrets.KNOWN_HOSTS }}" > ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
           eval "$(ssh-agent -s)"
           ssh-add ~/.ssh/id_rsa
 
-      - name: Deploy to EC2
+      - name: Deploy Application
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@3.135.62.54 << 'EOF'
-            cd monoturbo/
+          ssh ubuntu@your.server.com << 'EOF'
+            cd /path/to/your/application
             git pull origin main
             pnpm install
             pnpm run build
