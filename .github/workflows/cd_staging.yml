@@ -21,16 +21,15 @@ jobs:
           chmod 644 /home/runner/.ssh/known_hosts
 
           # Now SSH into the server and deploy
-          ssh -i ~/ssh_key ubuntu@3.135.62.54 -t "
+          ssh -i ~/ssh_key ubuntu@3.135.62.54 "
             cd monoturbo/ && 
             git pull origin main && 
-            export PATH=/home/ubuntu/.nvm/versions/node/v22.14.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
-            &&
+            export PATH=/home/ubuntu/.nvm/versions/node/v22.14.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin && 
             npm install -g pnpm && 
             pnpm install && 
-            pnpn run build  && 
+            pnpm run build && 
             # Restart pm2 services without needing to pass environment variables
-            pm2 restart fe-sever  && 
-            pm2 restart http-sever  && 
+            pm2 restart fe-sever && 
+            pm2 restart http-sever && 
             pm2 restart ws-sever
           "
