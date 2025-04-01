@@ -10,7 +10,11 @@ jobs:
     steps:
       - run: |
           echo "${{secrets.SSH_PRIVATE_KEY}}" &> ~/ssh_key
-          echo "${{secrets.KNOWN_HOSTS}}" &> ~/.ssh/knows_hosts
+          mkdir -p /home/runner/.ssh
+          ls /home/runner/.ssh
+          touch /home/runner/.ssh/knows_hosts
+          echo "${{secrets.KNOWN_HOSTS}}" &> /home/runner/.ssh/knows_hosts
+          chmod 700 /home/runner/ssh_key
           ssh -i ~/ssh_key ubuntu@3.135.62.54
           cd monoturbo/ && git pull
           pnpm install 
