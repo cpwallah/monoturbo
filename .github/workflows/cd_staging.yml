@@ -24,7 +24,7 @@ jobs:
             npm install -g pnpm && 
             pnpm install && 
             pnpm run build  && 
-            pm2 restart fe-sever --env production && 
-            pm2 restart http-sever --env production && 
-            pm2 restart ws-sever --env production
+            pm2 restart fe-sever  && 
+            pm2 restart http-sever  && 
+            pm2 restart ws-sever 
           "
