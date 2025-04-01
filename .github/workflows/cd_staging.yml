@@ -22,7 +22,8 @@ jobs:
           ssh -i ~/ssh_key ubuntu@3.135.62.54 -t "
             cd monoturbo/ &&
             git pull origin main &&
-            npm install -g pnpm &&
+            export PATH=/home/ubuntu/.nvm/versions/node/v22.14.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+            && npm install -g pnpm &&
             pnpm install &&
             pnpm run build &&
             # Check if 'fe-server' exists, if not, start it
