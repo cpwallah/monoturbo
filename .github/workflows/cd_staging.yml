@@ -35,5 +35,10 @@ jobs:
               pm2 start apps/web/path/to/fe-server --name fe-server;
             fi &&
             pm2 restart http-server &&
-            pm2 restart ws-sever
+            if pm2 list | grep -q 'ws-server'; then
+              pm2 restart ws-server;
+            else
+              echo 'ws-server not found, starting it';
+              pm2 start apps/ws-server/path/to/ws-server --name ws-server;
+            fi
           "
