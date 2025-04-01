@@ -11,19 +11,20 @@ jobs:
 
     steps:
       - run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" &> ~/ssh_key
+          # Setup SSH keys and known hosts
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/ssh_key
           mkdir -p /home/runner/.ssh
-          ls /home/runner/.ssh
           touch /home/runner/.ssh/known_hosts
-          echo "${{ secrets.KNOWN_HOSTS }}" &> /home/runner/.ssh/known_hosts
+          echo "${{ secrets.KNOWN_HOSTS }}" > /home/runner/.ssh/known_hosts
           chmod 700 ~/ssh_key
           chmod 644 /home/runner/.ssh/known_hosts
+          
           # SSH into the server to deploy
           ssh -i ~/ssh_key ubuntu@3.135.62.54 -t "
             cd monoturbo/ &&
             git pull origin main &&
-            export PATH=/home/ubuntu/.nvm/versions/node/v22.14.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
-            && npm install -g pnpm &&
+            export PATH=/home/ubuntu/.nvm/versions/node/v22.14.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin &&
+            npm install -g pnpm &&
             pnpm install &&
             pnpm run build &&
             # Check if 'fe-server' exists, if not, start it
