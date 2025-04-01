@@ -21,8 +21,7 @@ jobs:
           ssh -i ~/ssh_key root@64.227.147.124 -t "
             cd monoturbo/ && 
             git pull origin main && 
-            export PATH=/root/.nvm/versions/node/v22.14.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin && 
-            npm install -g pnpm && 
+            && npm install -g pnpm && 
             pnpm install && 
             pnpm run build && 
             pm2 restart fe-sever && 
