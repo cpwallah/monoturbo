@@ -9,7 +9,7 @@ jobs:
     name: Deploying everything to the stage cluster
     steps:
       - run: |
-          echo "${{secrets.SSH_PRIVATE_KEY}}"" &> ~/ssh_key
+          echo "${{secrets.SSH_PRIVATE_KEY}}" &> ~/ssh_key
           ssh -i ~/ssh_key ubuntu@3.135.62.54
           cd monoturbo/ && git pull
           pnpm install 
