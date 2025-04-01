@@ -23,8 +23,8 @@ jobs:
             export PATH=/home/ubuntu/.nvm/versions/node/v22.14.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin && 
             npm install -g pnpm && 
             pnpm install && 
-            pnpm run build && 
-            pm2 restart fe-sever && 
-            pm2 restart http-sever && 
-            pm2 restart ws-sever
+            pnpm run build --update-env && 
+            pm2 restart fe-sever --update-env && 
+            pm2 restart http-sever --update-env && 
+            pm2 restart ws-sever --update-env
           "
