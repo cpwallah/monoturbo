@@ -34,6 +34,6 @@ jobs:
               echo 'fe-server not found, starting it';
               pm2 start apps/web/path/to/fe-server --name fe-server;
             fi &&
-            pm2 restart http-sever &&
+            pm2 restart http-server &&
             pm2 restart ws-sever
           "
