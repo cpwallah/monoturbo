@@ -17,19 +17,21 @@ jobs:
           touch /home/runner/.ssh/known_hosts
           echo "${{ secrets.KNOWN_HOSTS }}" &> /home/runner/.ssh/known_hosts
           chmod 700 ~/ssh_key
-          # Set the proper permissions for the known_hosts file
           chmod 644 /home/runner/.ssh/known_hosts
-
-          # Now SSH into the server and deploy
-          ssh -i ~/ssh_key ubuntu@3.135.62.54 "
-            cd monoturbo/ && 
-            git pull origin main && 
-            export PATH=/home/ubuntu/.nvm/versions/node/v22.14.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin && 
-            npm install -g pnpm && 
-            pnpm install && 
-            pnpm run build && 
-            # Restart pm2 services without needing to pass environment variables
-            pm2 restart fe-sever && 
-            pm2 restart http-sever && 
+          # SSH into the server to deploy
+          ssh -i ~/ssh_key ubuntu@3.135.62.54 -t "
+            cd monoturbo/ &&
+            git pull origin main &&
+            npm install -g pnpm &&
+            pnpm install &&
+            pnpm run build &&
+            # Check if 'fe-server' exists, if not, start it
+            if pm2 list | grep -q 'fe-server'; then
+              pm2 restart fe-server;
+            else
+              echo 'fe-server not found, starting it';
+              pm2 start apps/web/path/to/fe-server --name fe-server;
+            fi &&
+            pm2 restart http-sever &&
             pm2 restart ws-sever
           "
