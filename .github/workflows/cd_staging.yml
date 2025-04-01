@@ -1,4 +1,5 @@
 name: Deploy to Staging
+
 on:
   push:
     branches: [main]
@@ -6,16 +7,36 @@ on:
 jobs:
   redeploy_everything:
     runs-on: ubuntu-latest
-    name: Deploying everything to the stage cluster
+    name: Deploying everything to the staging cluster
     steps:
-      - run: |
-          echo "${{secrets.SSH_PRIVATE_KEY}}" &> ~/ssh_key
-          mkdir -p /home/runner/.ssh
-          ls /home/runner/.ssh
-          touch /home/runner/.ssh/known_hosts
-          echo "${{secrets.KNOWN_HOSTS}}" &> /home/runner/.ssh/known_hosts
-          chmod 700 /home/runner/ssh_key
-          ssh -i ~/ssh_key ubuntu@3.135.62.54 -t "cd 
-          monoturbo/ && git pull origin main && pnpm
-          install && pnpm run build && pm2 restart fe-server &&
-          pm2 restart ws-server && pm2 restart http-server"  
+      - name: Set up SSH key and known_hosts
+        run: |
+          # Create SSH directory
+          mkdir -p ~/.ssh
+          
+          # Add known_hosts to prevent SSH authenticity prompts
+          echo "${{ secrets.KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+          
+          # Add SSH private key
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          
+          # Start SSH agent and add the private key
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_rsa
+
+      - name: Deploy application
+        run: |
+          # SSH into the server and perform deployment steps
+          ssh -o StrictHostKeyChecking=no root@64.227.147.124 -t "
+            cd monoturbo/ &&
+            git pull origin main &&
+            export PATH=/root/.nvm/versions/node/v22.14.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin &&
+            npm install -g pnpm &&
+            pnpm install &&
+            pnpm run build &&
+            pm2 restart fe-server &&
+            pm2 restart http-server &&
+            pm2 restart ws-server
+          "
